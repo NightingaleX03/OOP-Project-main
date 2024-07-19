@@ -63,15 +63,20 @@ namespace seneca {
     void Station::display(std::ostream& os, bool full) const {
 
         // Display the item
-        os << "[" << std::setw(3) << std::setfill('0') << m_id << "] " <<
-        "Item: " << std::setw(m_widthField) << std::setfill(' ') << m_name << 
-        " [" << std::setw(6) << std::setfill('0') << m_serial << "]";
+        os << std::setw(3) << std::setfill('0') << std::right << m_id << " | " <<
+        std::setw(m_widthField) << std::setfill(' ') << std::left << m_name << " | " <<
+        std::setw(6) << std::setfill('0') << std::right << m_serial << " | ";
 
         // Display the item description and quantity
         if (full) {
-            os << " Quantity: " << std::setw(m_widthField) << std::setfill(' ') << m_qty << " Description: " << m_desc;
+            if(m_id < 5){
+                os << std::setw(4) << std::setfill(' ')<< std::right << m_qty << " | " << std::left << m_desc.substr(0);
+            }
+            else{
+                os << std::setw(4) << std::setfill(' ')<< std::right << m_qty << " | " << std::left << m_desc;
+            }
         }
-        
+
         os << std::endl;
     }
 }

@@ -24,7 +24,7 @@ namespace seneca{
         size_t getFieldWidth() const;
         const std::string extractToken(const std::string& str, size_t& next_pos, bool& more);
         static void setDelimiter(const char newDelimiter);
-        const char getDelimiter() const;
+        static char getDelimiter();
     };
 }
 

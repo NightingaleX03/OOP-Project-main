@@ -11,7 +11,7 @@ smathew32@myseneca.ca
 #include "Utilities.h"
 
 namespace seneca{
-    char Utilities::m_delimiter = ' ';
+    char Utilities::m_delimiter = '\0';
 
     void Utilities::setFieldWidth(size_t newWidth) {
         m_widthField = newWidth;
@@ -24,14 +24,36 @@ namespace seneca{
     const std::string Utilities::extractToken(const std::string& str, size_t& next_pos, bool& more) {
         std::string token;
         size_t pos = str.find(m_delimiter, next_pos);
+
+        if(next_pos == std::string::npos && more){
+            more = false;
+            throw "No token";
+        }
+
+        if(str.at(next_pos) == m_delimiter && more){
+            more = false;
+            throw "next_pos is a delimiter";
+        }
+
         if (pos != std::string::npos) {
             token = str.substr(next_pos, pos - next_pos);
+            token.erase(0, token.find_first_not_of(" \t"));
+            token.erase(token.find_last_not_of(" \t") + 1);
             next_pos = pos + 1;
+            more = true;
         }
         else {
             token = str.substr(next_pos);
+            token.erase(0, token.find_first_not_of(" \t"));
+            token.erase(token.find_last_not_of(" \t") + 1);
+            next_pos = std::string::npos;
             more = false;
         }
+
+        if (token.length() > m_widthField) {
+            m_widthField = token.length();
+        }
+        
         return token;
     }
 
@@ -39,7 +61,7 @@ namespace seneca{
         m_delimiter = newDelimiter;
     }
 
-    const char Utilities::getDelimiter() const {
+    char Utilities::getDelimiter(){
         return m_delimiter;
     }
         
