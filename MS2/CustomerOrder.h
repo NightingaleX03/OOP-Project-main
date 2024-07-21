@@ -8,8 +8,8 @@ smathew32@myseneca.ca
 140903238
 */
 
-#ifndef SENECA_CUSTOMER_ORDER_H
-#define SENECA_CUSTOMER_ORDER_H
+#ifndef SENECA_CUSTOMERORDER_H
+#define SENECA_CUSTOMERORDER_H
 
 #include <string>
 #include <stdexcept>
@@ -17,17 +17,16 @@ smathew32@myseneca.ca
 #include "Utilities.h"
 
 namespace seneca{
+
+    struct Item{
+        std::string m_itemName;
+        size_t m_serialNumber{0};
+        bool m_isFilled{false};
+
+        Item(const std::string& src) : m_itemName(src) {};
+    };
+
     class CustomerOrder {
-
-        struct Item{
-            std::string m_itemName;
-            size_t m_serialNumber{0};
-            bool m_isFilled{false};
-
-            Item(const std::string& src) : m_itemName(src) {};
-        };
-
-    private:
 
         std::string m_name;
         std::string m_product;
@@ -40,8 +39,8 @@ namespace seneca{
         CustomerOrder(const std::string& str);
         
         // no copy constructor
-        CustomerOrder(const CustomerOrder& other) = delete;
-        CustomerOrder& operator=(const CustomerOrder& other) = delete;
+        CustomerOrder(const CustomerOrder& other);
+        CustomerOrder& operator=(const CustomerOrder& other);
         // move constructor
         CustomerOrder(CustomerOrder&& other) noexcept;
         CustomerOrder& operator=(CustomerOrder&& other) noexcept;

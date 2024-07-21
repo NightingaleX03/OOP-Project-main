@@ -29,12 +29,10 @@ namespace seneca {
         // Convert to int
         m_serial = std::stoi(util.extractToken(str, next_pos, more));
         m_qty = std::stoi(util.extractToken(str, next_pos, more));
+        Station::m_widthField = std::max(util.getFieldWidth(), Station::m_widthField);
         m_desc = util.extractToken(str, next_pos, more);
 
-        // Update widthField
-        if (m_widthField < util.getFieldWidth()) {
-            m_widthField = util.getFieldWidth();
-        }
+        
     }
 
     // get item names
@@ -64,7 +62,7 @@ namespace seneca {
 
         // Display the item
         os << std::setw(3) << std::setfill('0') << std::right << m_id << " | " <<
-        std::setw(m_widthField) << std::setfill(' ') << std::left << m_name << " | " <<
+        std::setw(m_widthField) << std::left << std::setfill(' ') << m_name << " | " <<
         std::setw(6) << std::setfill('0') << std::right << m_serial << " | ";
 
         // Display the item description and quantity

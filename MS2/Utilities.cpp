@@ -23,7 +23,7 @@ namespace seneca{
 
     const std::string Utilities::extractToken(const std::string& str, size_t& next_pos, bool& more) {
         std::string token;
-        size_t pos = str.find(m_delimiter, next_pos);
+        size_t pos = str.find_first_of(m_delimiter, next_pos);
 
         if(next_pos == std::string::npos && more){
             more = false;
