@@ -12,25 +12,22 @@ smathew32@myseneca.ca
 #define SENECA_WORKSTATION_H
 
 #include <deque>
-#include "Station.h"
 #include "CustomerOrder.h"
-#include <string>
-#include <iostream>
+#include "Station.h"
 
 namespace seneca{
 
-    extern std::deque<CustomerOrder> pending;
-    extern std::deque<CustomerOrder> completed;
-    extern std::deque<CustomerOrder> incomplete;
+    extern std::deque<CustomerOrder> g_pending;
+    extern std::deque<CustomerOrder> g_completed;
+    extern std::deque<CustomerOrder> g_incomplete;
 
     class Workstation : public Station {
         std::deque<CustomerOrder> m_orders;
-        Workstation* m_pNextStation{nullptr};
+        Workstation* m_pNextStation;
 
     public:
 
-        Workstation(const std::string& str);
-
+        Workstation(const std::string& str) : Station(str), m_pNextStation(nullptr) {};
         Workstation(const Workstation&) = delete;
         Workstation& operator=(const Workstation&) = delete;
         Workstation(Workstation&&) = delete;
@@ -38,7 +35,8 @@ namespace seneca{
 
         void fill(std::ostream& os);
         bool attemptToMoveOrder();
-        void setNextStation(Workstation* station);
+        void setNextStation(Workstation* station = nullptr);
+        bool isEmpty();
         Workstation* getNextStation() const;
         void display(std::ostream& os) const;
         Workstation& operator+=(CustomerOrder&& newOrder);

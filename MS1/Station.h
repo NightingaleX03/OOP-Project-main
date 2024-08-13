@@ -21,12 +21,13 @@ namespace seneca{
         int m_id;
         std::string m_name;
         std::string m_desc;
-        unsigned int m_serial;
-        unsigned int m_qty;
-        static size_t m_widthField;
-        static int id_generator;
+        size_t m_serial;
+        size_t m_qty;
 
     public:
+
+    static size_t m_widthField;
+    static size_t id_generator;
 
     Station(const std::string& str);
     const std::string& getItemName() const;

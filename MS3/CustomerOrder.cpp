@@ -12,10 +12,10 @@ smathew32@myseneca.ca
 
 namespace seneca{
 
-    size_t CustomerOrder::m_widthField = 1;
+    size_t CustomerOrder::m_widthField = 0;
 
     // default constructor
-    CustomerOrder::CustomerOrder(): m_name(""), m_product(""), m_cntItem(0), m_lstItem(nullptr){}
+    CustomerOrder::CustomerOrder(): m_cntItem(0), m_lstItem(nullptr){}
 
     CustomerOrder::CustomerOrder(const std::string& str){
         Utilities util;
@@ -30,13 +30,12 @@ namespace seneca{
         m_cntItem = 0;
         size_t pos_Start = next_pos;
         while(more){
-            util.extractToken(str, next_pos, more);
+            util.extractToken(str, pos_Start, more);
             m_cntItem++;
         }
 
         // allocate memory for the items
         m_lstItem = new Item*[m_cntItem];
-        next_pos = pos_Start;
         more = true;
 
         // extract the items
@@ -52,37 +51,34 @@ namespace seneca{
     }
 
     CustomerOrder::CustomerOrder(const CustomerOrder& other){
-        // throw an exception
-        throw std::runtime_error("CustomerOrders::CustomerOrders(&): ----> ERROR: Cannot make copies.");
-    }
-    
-    CustomerOrder& CustomerOrder::operator=(const CustomerOrder& other){
-        // throw an exception
-        throw std::runtime_error("CustomerOrders::CustomerOrders(&): ----> ERROR: Cannot make copies.");
+        m_lstItem = nullptr;
+        throw std::exception(); 
     }
 
-    CustomerOrder::CustomerOrder(CustomerOrder&& other) noexcept: m_name(""), m_product(""), m_cntItem(0), m_lstItem(nullptr){
-        // call the move assignment operator
+
+    CustomerOrder::CustomerOrder(CustomerOrder&& other) noexcept{
+        m_lstItem = nullptr;
+        m_cntItem = 0;
         *this = std::move(other);
     }
     CustomerOrder& CustomerOrder::operator=(CustomerOrder&& other) noexcept{
         // check if exist
         if(this != &other){
+            
             // deallocate memory
-            for(auto i = 0u; i < m_cntItem; ++i){
+            m_name = other.m_name;
+            other.m_name.erase();
+            m_product = other.m_product;
+            other.m_product.erase();
+
+            // deallocate memory
+            for(size_t i = 0; i < m_cntItem; i++){
                 delete m_lstItem[i];
             }
             delete[] m_lstItem;
 
-            // move the data
-            m_name = other.m_name;  
-            m_product = other.m_product;
             m_cntItem = other.m_cntItem;
             m_lstItem = other.m_lstItem;
-
-            // set the other item to null
-            other.m_name = "";
-            other.m_product = "";
             other.m_lstItem = nullptr;
             other.m_cntItem = 0u;
         }
@@ -92,7 +88,7 @@ namespace seneca{
 
     CustomerOrder::~CustomerOrder(){
         // deallocate memory
-        for(size_t i = 0; i < m_cntItem; ++i){
+        for(size_t i = 0; i < m_cntItem; i++){
             delete m_lstItem[i];
         }
 
@@ -101,44 +97,50 @@ namespace seneca{
 
 
     bool CustomerOrder::isOrderFilled() const{
+        // flag
+        bool filled = true;
+
         // check if all items are filled
         for(size_t i = 0; i < m_cntItem; i++){
             // if not filled return false
             if(!m_lstItem[i]->m_isFilled){
-                return false;
+                filled = false;
             }
         }
 
-        return true;
+        return filled;
     }
 
     bool CustomerOrder::isItemFilled(const std::string& itemName) const{
+        // flag
+        bool filled = true;
         // check if the item is filled
         for(size_t i = 0; i < m_cntItem; i++){
             // if the item is not filled and the name matches return false
             if(m_lstItem[i]->m_itemName == itemName && !m_lstItem[i]->m_isFilled){
-                return false;
+                filled = false;
             }
         }
 
-        return true;
+        return filled;
     }
 
     void CustomerOrder::fillItem(Station& station, std::ostream& os){
+        bool filled = false;
         // fill the item
-        for(size_t i = 0; i < m_cntItem; i++){
+        for(size_t i = 0; i < m_cntItem && !filled; i++){
             // if the item is not filled
-            if(m_lstItem[i]->m_itemName == station.getItemName()){
+            if(m_lstItem[i]->m_itemName == station.getItemName() && !m_lstItem[i]->m_isFilled){
                 // check if the station has the item
                 if(station.getQuantity() > 0){
                     // fill the item
                     station.updateQuantity();
                     m_lstItem[i]->m_serialNumber = station.getNextSerialNumber();
                     m_lstItem[i]->m_isFilled = true;
+                    filled = true;
 
                     // display the message
                     os << "    Filled " << m_name << ", " << m_product << " [" << m_lstItem[i]->m_itemName << "]" << std::endl;
-                    break;
                 }else{
                     // display the message
                     os << "    Unable to fill " << m_name << ", " << m_product << " [" << m_lstItem[i]->m_itemName << "]" << std::endl;
@@ -152,8 +154,8 @@ namespace seneca{
         os << m_name << " - " << m_product << std::endl;
         // output the items
         for(size_t i = 0; i < m_cntItem; i++){
-            os << "[" << std::setw(6) << std::setfill('0') << m_lstItem[i]->m_serialNumber << "] "
-           << std::setw(m_widthField) << std::setfill(' ') << m_lstItem[i]->m_itemName << " - "
+            os << "[" << std::setw(6) << std::setfill('0') << std::right << m_lstItem[i]->m_serialNumber << "] "
+           << std::setw(m_widthField) << std::setfill(' ') << std::left << m_lstItem[i]->m_itemName << " - "
            << (m_lstItem[i]->m_isFilled ? "FILLED" : "TO BE FILLED") << std::endl;
         }
     }

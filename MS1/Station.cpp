@@ -14,13 +14,13 @@ namespace seneca {
 
     // Static member initialization
     size_t Station::m_widthField = 0;
-    int Station::id_generator = 0;
+    size_t Station::id_generator = 0;
 
     // Custom constructor
     Station::Station(const std::string& str) {
         Utilities util;
         size_t next_pos = 0;
-        bool more = true;
+        bool more = false;
 
         m_id = ++id_generator;
 
@@ -29,12 +29,13 @@ namespace seneca {
         // Convert to int
         m_serial = std::stoi(util.extractToken(str, next_pos, more));
         m_qty = std::stoi(util.extractToken(str, next_pos, more));
-        m_desc = util.extractToken(str, next_pos, more);
 
-        // Update widthField
-        if (m_widthField < util.getFieldWidth()) {
+        // Set the width of the field
+        if(m_widthField < util.getFieldWidth()){
             m_widthField = util.getFieldWidth();
         }
+
+        m_desc = util.extractToken(str, next_pos, more);        
     }
 
     // get item names
@@ -64,7 +65,7 @@ namespace seneca {
 
         // Display the item
         os << std::setw(3) << std::setfill('0') << std::right << m_id << " | " <<
-        std::setw(m_widthField) << std::setfill(' ') << std::left << m_name << " | " <<
+        std::setw(m_widthField) << std::left << std::setfill(' ') << m_name << " | " <<
         std::setw(6) << std::setfill('0') << std::right << m_serial << " | ";
 
         // Display the item description and quantity

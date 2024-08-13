@@ -1,0 +1,13 @@
+/*
+I declare that this submission is the result of my own work and I only copied the code that 
+my professor provided to complete my workshops and assignments. This submitted piece of work 
+has not been shared with any other student or 3rd party content provider.
+
+Sarah Mathew
+smathew32@myseneca.ca
+140903238
+*/
+
+During this Project, I've learned about various concepts but most importantly how much hard work I need to put into understanding the problem prior to
+coding the solution out right away. I've taken so long to submit this project because of how long it's been taking me to code the project out. Overall I'm thankful to have 
+completed the solution on time despite only being able to recieving 10%.

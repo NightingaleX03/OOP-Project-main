@@ -40,7 +40,7 @@ namespace seneca{
         
         // no copy constructor
         CustomerOrder(const CustomerOrder& other);
-        CustomerOrder& operator=(const CustomerOrder& other);
+        CustomerOrder& operator=(const CustomerOrder& other) = delete;
         // move constructor
         CustomerOrder(CustomerOrder&& other) noexcept;
         CustomerOrder& operator=(CustomerOrder&& other) noexcept;
